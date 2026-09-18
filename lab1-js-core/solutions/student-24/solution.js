@@ -14,7 +14,7 @@ function simpleTask() {
 
 // ===== ЗАДАНИЕ 2: Функции =====
 function getReviewerNumber(number, lab) {
-    return (number + lab) % 31;
+    return ((number + lab - 1) % 30) + 1;
 }
 
 function getVariant(number, variants) {

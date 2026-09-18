@@ -3,7 +3,7 @@
 // ===== ЗАДАНИЕ 1: Базовые операции =====
 function simpleTask() {
     let p1 = 1;
-    let p2 = Дима;
+    let p2 = "Дима";
     let p3 = null;
     let p4 = undefined;
     const p5 = 3;
@@ -23,14 +23,14 @@ function getVariant(number, variants) {
 
 function calculate(a, b, operation) {
     switch (operation) {
-        case sum:
+        case '+':
             return a + b;
-        case min:
+        case '-':
             return a - b;
-        case multip:
+        case '*':
             return a * b;
-        case division:
-            if (b = 0) {
+        case '/':
+            if (b === 0) {
                 return console.log("Делить нельзя на ноль")
                 break;
             }
@@ -42,11 +42,11 @@ function calculate(a, b, operation) {
 
 function calculateArea(figure, ...params) {
     switch (figure) {
-        case circle:
-            return 2 * Math.PI * Math.sqrt(params[0], 2);
-        case rectangle:
+        case 'circle':
+            return Math.PI * Math.pow(params[0], 2);
+        case 'rectangle':
             return params[0] * params[1];
-        case triangle:
+        case 'triangle':
             return params[0] * params[1];
         default:
             console.log("Нет такой фигуры")
@@ -309,41 +309,21 @@ function taskClasses() {
         }
     }
 
-    // ===== ЗАДАНИЕ 7: Каррирование =====
-    // Создайте функцию createVehicleFactory, которая возвращает функцию
-    // для создания транспортных средств определенного типа (каррирование).
+
     const createVehicleFactory = (vehicleType) => (make, model, year) => {
-        return {}; // Замените {} на выражение
+        if (vehicleType === 'Car') {
+            return new Car(make, model, year);
+        } else if (vehicleType === 'ElectricCar') {
+            return new ElectricCar(make, model, year);
+        } else {
+            return new Vehicle(make, model, year);
+        }
     };
 
     return { Vehicle, Car, ElectricCar, createVehicleFactory };
 }
 
-// ===== ЗАДАНИЕ 8: Регулярные выражения =====
-/*
-Дополнительные материалы:
-https://regex101.com/ - интерактивный тестер regex
-MDN Regular Expressions - https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Regular_expressions
-Learn Regex - https://github.com/ziishaned/learn-regex - учебник по regex
 
-Задание (по вариантам):
-1. Изучите функции с регулярными выражениями по своему варианту
-На защите вы должны суметь объяснить структуру регулярного выражения.
-2. Напишите тесты, покрывающие все различные варианты. Обратите внимание: тесты должны обеспечивать полное покрытие, но не быть дублирующимися.
-3. Если предложенное регулярное выражение некорректно, вы можете исправить его.
-
-Вычисление своего варианта:
-Номер варианта = Ваш номер % Общее количество вариантов
- */
-
-/**
- * Вариант 1: Валидация email адреса
- * Правила:
- * - Латиница, цифры, спецсимволы: ._%+-
- * - Обязательный символ @
- * - Доменная часть: латиница, цифры, точка
- * - Минимальная длина 5 символов
- */
 function validateEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
@@ -354,16 +334,29 @@ function validateEmail(email) {
 function runTests() {
     console.log("=== ТЕСТИРОВАНИЕ ===");
 
-    // Тест 1: getReviewerNumber
+
     console.assert(getReviewerNumber(5, 1) === 6, "Тест получения ревьюера провален");
 
-    // Тест 2: calculate
-    console.assert(calculate(10, 5, '+') === 15, "Тест калькулятора провален");
 
-    // Тест 3: taskManager
+    console.assert(calculate(10, 5, '+') === 15, "Тест калькулятора провален");
+    console.assert(calculate(10, 5, '-') === 5, "Тест калькулятора (-) провален");
+    console.assert(calculate(10, 5, '*') === 50, "Тест калькулятора (*) провален");
+    console.assert(calculate(10, 5, '/') === 2, "Тест калькулятора (/) провален");
+
+    console.assert(calculateArea("rectangle", 5, 3) === 15, "Тест площади прямоугольника провален");
+    
+
+    console.assert(reverseString("hello") === "olleh", "reverseString провален");
+    console.log(`Рандомное число: ${getRandomNumber(1, 100)}`);
+    console.log();
+
+
     console.assert((taskManager.getStats() || {}).total === 3, "Тест taskManager провален");
 
-    // Тест 4: классы и наследование
+    console.assert(book.toggleAvailability() === false, "book.toggleAvailability false провален");
+    console.assert(book.toggleAvailability() === true, "book.toggleAvailability true провален");
+    console.assert(student.getAverageGrade() === 90, "student.getAverageGrade провален");
+
     const { Vehicle, Car, ElectricCar, createVehicleFactory } = taskClasses();
     const vehicle = new Vehicle('Toyota', 'Camry', 2015);
     vehicle.displayInfo();
@@ -387,7 +380,7 @@ function runTests() {
 
     console.log('Всего создано транспортных средств:', Vehicle.getTotalVehicles());
 
-    
+
     console.assert(validateEmail("user@example.com") === true, "Должен принимать корректный email");
     console.assert(validateEmail("user name@example.com") === false, "Должен отклонять email с пробелами");
     console.assert(validateEmail("user@@example.com") === false, "Должен отклонять email с двойным @");

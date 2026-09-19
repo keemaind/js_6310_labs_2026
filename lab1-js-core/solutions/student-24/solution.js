@@ -310,17 +310,12 @@ function taskClasses() {
     }
 
 
-     const createVehicleFactory = (vehicleType) => {
+    const createVehicleFactory = (vehicleType) => {
         return (...args) => {
-            if (vehicleType === 'Car') {
-                return new Car(...args);
-            } else if (vehicleType === 'ElectricCar') {
-                return new ElectricCar(...args);
-            } else {
-                
-                return new Vehicle(...args);
-            }
+            return new vehicleType(...args);
+        };
     };
+
 
     return { Vehicle, Car, ElectricCar, createVehicleFactory };
 }

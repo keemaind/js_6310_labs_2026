@@ -310,14 +310,16 @@ function taskClasses() {
     }
 
 
-    const createVehicleFactory = (vehicleType) => (make, model, year) => {
-        if (vehicleType === 'Car') {
-            return new Car(make, model, year);
-        } else if (vehicleType === 'ElectricCar') {
-            return new ElectricCar(make, model, year);
-        } else {
-            return new Vehicle(make, model, year);
-        }
+     const createVehicleFactory = (vehicleType) => {
+        return (...args) => {
+            if (vehicleType === 'Car') {
+                return new Car(...args);
+            } else if (vehicleType === 'ElectricCar') {
+                return new ElectricCar(...args);
+            } else {
+                
+                return new Vehicle(...args);
+            }
     };
 
     return { Vehicle, Car, ElectricCar, createVehicleFactory };
@@ -333,30 +335,94 @@ function validateEmail(email) {
 // ===== ТЕСТИРОВАНИЕ =====
 function runTests() {
     console.log("=== ТЕСТИРОВАНИЕ ===");
+    
+    simpleTask();
 
+    processArrays();
 
+    // getReviewerNumber
     console.assert(getReviewerNumber(5, 1) === 6, "Тест получения ревьюера провален");
-
-
+    
+    // getVariant
+    console.assert(getVariant(5, 10) === 5, "getVariant: обычный случай");
+    
+    // calculate
     console.assert(calculate(10, 5, '+') === 15, "Тест калькулятора провален");
     console.assert(calculate(10, 5, '-') === 5, "Тест калькулятора (-) провален");
     console.assert(calculate(10, 5, '*') === 50, "Тест калькулятора (*) провален");
     console.assert(calculate(10, 5, '/') === 2, "Тест калькулятора (/) провален");
-
+   
+    // calculateArea
     console.assert(calculateArea("rectangle", 5, 3) === 15, "Тест площади прямоугольника провален");
     
-
+    // reverseString
     console.assert(reverseString("hello") === "olleh", "reverseString провален");
+    
+    // getRandomNumber
     console.log(`Рандомное число: ${getRandomNumber(1, 100)}`);
     console.log();
 
+    // book
+    const bookInfo = book.getInfo();
+    console.assert(bookInfo.includes("Человек паук"), "book.getInfo должен содержать название");
+    console.assert(bookInfo.includes("Stan lee"), "book.getInfo должен содержать автора");
+    
+    console.assert(book.isAvailable === true, "book изначально доступен");
+    console.assert(book.toggleAvailability() === false, "book.toggleAvailability: first toggle");
+    console.assert(book.isAvailable === false, "book.isAvailable после первого toggle");
+    console.assert(book.toggleAvailability() === true, "book.toggleAvailability: second toggle");
+    console.assert(book.isAvailable === true, "book.isAvailable после второго toggle");
 
-    console.assert((taskManager.getStats() || {}).total === 3, "Тест taskManager провален");
-
-    console.assert(book.toggleAvailability() === false, "book.toggleAvailability false провален");
-    console.assert(book.toggleAvailability() === true, "book.toggleAvailability true провален");
     console.assert(student.getAverageGrade() === 90, "student.getAverageGrade провален");
+    
+    student.addGrade("english", 88);
+    console.assert(student.grades.english === 88, "student.addGrade: новая оценка добавлена");
 
+    const newAvg = student.getAverageGrade();
+    console.assert(newAvg === 89.5, `student.getAverageGrade после добавления: ожидалось 89.5, получено ${newAvg}`);
+    
+    student.addGrade("physics", 92);
+    console.assert(Object.keys(student.grades).length === 5, "student: должно быть 5 предметов");
+
+    // tasks
+    const initialStats = taskManager.getStats();
+    console.assert(initialStats.total === 3, "taskManager: изначально 3 задачи");
+    console.assert(initialStats.completed === 1, "taskManager: 1 выполненная задача");
+    console.assert(initialStats.pending === 2, "taskManager: 2 незавершенных задачи");
+    console.assert(Math.abs(initialStats.completionRate - 33.33) < 0.01, 
+        `taskManager: completionRate ~33.33%, получено ${initialStats.completionRate}%`);
+    
+    const newTask = taskManager.addTask("Написать тесты", "high");
+    console.assert(newTask.title === "Написать тесты", "addTask: название сохранено");
+    console.assert(newTask.completed === false, "addTask: задача не выполнена");
+    console.assert(newTask.priority === "high", "addTask: приоритет сохранен");
+    console.assert(taskManager.tasks.length === 4, "addTask: количество задач увеличено");
+
+    
+    const defaultTask = taskManager.addTask("Задача без приоритета");
+    console.assert(defaultTask.priority === "medium", "addTask: дефолтный приоритет medium");
+
+    const completedTask = taskManager.completeTask(1);
+    console.assert(completedTask !== null, "completeTask: задача найдена");
+    console.assert(completedTask.completed === true, "completeTask: задача отмечена выполненной");
+    
+    const notFoundTask = taskManager.completeTask(999);
+    console.assert(notFoundTask === null, "completeTask: несуществующая задача возвращает null");
+
+    const deletedTask = taskManager.deleteTask(2);
+    console.assert(deletedTask !== null, "deleteTask: задача удалена");
+    console.assert(deletedTask.id === 2, "deleteTask: правильный ID");
+    console.assert(taskManager.tasks.length === 4, "deleteTask: количество задач уменьшено");
+
+    const completedTasks = taskManager.getTasksByStatus(true);
+    const pendingTasks = taskManager.getTasksByStatus(false);
+    console.assert(completedTasks.length >= 1, "getTasksByStatus: есть выполненные задачи");
+    console.assert(pendingTasks.length >= 1, "getTasksByStatus: есть невыполненные задачи");
+
+    const updatedStats = taskManager.getStats();
+    console.assert(updatedStats.total === 4, "getStats: обновленное количество задач");
+
+    // Vehicle
     const { Vehicle, Car, ElectricCar, createVehicleFactory } = taskClasses();
     const vehicle = new Vehicle('Toyota', 'Camry', 2015);
     vehicle.displayInfo();
@@ -374,16 +440,37 @@ function runTests() {
     console.assert(testVehicle.age === (new Date().getFullYear() - 2010), 'Тест возраста провален');
 
     const createCarFactory = createVehicleFactory(Car);
-    const myNewCar = createCarFactory('BMW', 'X5', 2022);
-    console.log('Создан новый автомобиль:');
+    const myNewCar = createCarFactory('BMW', 'X5', 2022, 5); 
+    console.log('Создан новый автомобиль через фабрику:');
     myNewCar.displayInfo();
+    console.assert(myNewCar.numDoors === 5, "Тест фабрики для Car (numDoors) провален");
+
+    const createElectricCarFactory = createVehicleFactory(ElectricCar);
+    const myNewElectricCar = createElectricCarFactory('Tesla', 'Model S', 2023, 4, 100);
+    console.log('Создан новый электромобиль через фабрику:');
+    myNewElectricCar.displayInfo();
+    console.assert(myNewElectricCar.batteryCapacity === 100, "Тест фабрики для ElectricCar провален");
 
     console.log('Всего создано транспортных средств:', Vehicle.getTotalVehicles());
 
-
-    console.assert(validateEmail("user@example.com") === true, "Должен принимать корректный email");
-    console.assert(validateEmail("user name@example.com") === false, "Должен отклонять email с пробелами");
-    console.assert(validateEmail("user@@example.com") === false, "Должен отклонять email с двойным @");
+    console.assert(validateEmail("user@example.com") === true, 
+        "validateEmail: корректный email");
+    console.assert(validateEmail("user.name+tag@sub.example.co.uk") === true, 
+        "validateEmail: сложный корректный email");
+    console.assert(validateEmail("user name@example.com") === false, 
+        "validateEmail: email с пробелами");
+    console.assert(validateEmail("user@@example.com") === false, 
+        "validateEmail: двойной @");
+    console.assert(validateEmail("@example.com") === false, 
+        "validateEmail: нет имени пользователя");
+    console.assert(validateEmail("user@.com") === false, 
+        "validateEmail: нет домена");
+    console.assert(validateEmail("user@example") === false, 
+        "validateEmail: нет доменной зоны");
+    console.assert(validateEmail("") === false, 
+        "validateEmail: пустая строка");
+    console.assert(validateEmail("plaintext") === false, 
+        "validateEmail: нет @");
 
     console.log("Все тесты пройдены! ✅");
 }

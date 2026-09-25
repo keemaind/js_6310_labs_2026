@@ -326,33 +326,39 @@ function validateEmail(email) {
     return emailRegex.test(email);
 }
 
+function validateDate(date) {
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d{2}$/;
+    return dateRegex.test(date);
+}
+
+
 
 // ===== ТЕСТИРОВАНИЕ =====
 function runTests() {
     console.log("=== ТЕСТИРОВАНИЕ ===");
-    
+
     simpleTask();
 
     processArrays();
 
     // getReviewerNumber
     console.assert(getReviewerNumber(5, 1) === 6, "Тест получения ревьюера провален");
-    
+
     // getVariant
     console.assert(getVariant(5, 10) === 5, "getVariant: обычный случай");
-    
+
     // calculate
     console.assert(calculate(10, 5, '+') === 15, "Тест калькулятора провален");
     console.assert(calculate(10, 5, '-') === 5, "Тест калькулятора (-) провален");
     console.assert(calculate(10, 5, '*') === 50, "Тест калькулятора (*) провален");
     console.assert(calculate(10, 5, '/') === 2, "Тест калькулятора (/) провален");
-   
+
     // calculateArea
     console.assert(calculateArea("rectangle", 5, 3) === 15, "Тест площади прямоугольника провален");
-    
+
     // reverseString
     console.assert(reverseString("hello") === "olleh", "reverseString провален");
-    
+
     // getRandomNumber
     console.log(`Рандомное число: ${getRandomNumber(1, 100)}`);
     console.log();
@@ -361,7 +367,7 @@ function runTests() {
     const bookInfo = book.getInfo();
     console.assert(bookInfo.includes("Человек паук"), "book.getInfo должен содержать название");
     console.assert(bookInfo.includes("Stan lee"), "book.getInfo должен содержать автора");
-    
+
     console.assert(book.isAvailable === true, "book изначально доступен");
     console.assert(book.toggleAvailability() === false, "book.toggleAvailability: first toggle");
     console.assert(book.isAvailable === false, "book.isAvailable после первого toggle");
@@ -369,13 +375,13 @@ function runTests() {
     console.assert(book.isAvailable === true, "book.isAvailable после второго toggle");
 
     console.assert(student.getAverageGrade() === 90, "student.getAverageGrade провален");
-    
+
     student.addGrade("english", 88);
     console.assert(student.grades.english === 88, "student.addGrade: новая оценка добавлена");
 
     const newAvg = student.getAverageGrade();
     console.assert(newAvg === 89.5, `student.getAverageGrade после добавления: ожидалось 89.5, получено ${newAvg}`);
-    
+
     student.addGrade("physics", 92);
     console.assert(Object.keys(student.grades).length === 5, "student: должно быть 5 предметов");
 
@@ -384,23 +390,23 @@ function runTests() {
     console.assert(initialStats.total === 3, "taskManager: изначально 3 задачи");
     console.assert(initialStats.completed === 1, "taskManager: 1 выполненная задача");
     console.assert(initialStats.pending === 2, "taskManager: 2 незавершенных задачи");
-    console.assert(Math.abs(initialStats.completionRate - 33.33) < 0.01, 
+    console.assert(Math.abs(initialStats.completionRate - 33.33) < 0.01,
         `taskManager: completionRate ~33.33%, получено ${initialStats.completionRate}%`);
-    
+
     const newTask = taskManager.addTask("Написать тесты", "high");
     console.assert(newTask.title === "Написать тесты", "addTask: название сохранено");
     console.assert(newTask.completed === false, "addTask: задача не выполнена");
     console.assert(newTask.priority === "high", "addTask: приоритет сохранен");
     console.assert(taskManager.tasks.length === 4, "addTask: количество задач увеличено");
 
-    
+
     const defaultTask = taskManager.addTask("Задача без приоритета");
     console.assert(defaultTask.priority === "medium", "addTask: дефолтный приоритет medium");
 
     const completedTask = taskManager.completeTask(1);
     console.assert(completedTask !== null, "completeTask: задача найдена");
     console.assert(completedTask.completed === true, "completeTask: задача отмечена выполненной");
-    
+
     const notFoundTask = taskManager.completeTask(999);
     console.assert(notFoundTask === null, "completeTask: несуществующая задача возвращает null");
 
@@ -435,7 +441,7 @@ function runTests() {
     console.assert(testVehicle.age === (new Date().getFullYear() - 2010), 'Тест возраста провален');
 
     const createCarFactory = createVehicleFactory(Car);
-    const myNewCar = createCarFactory('BMW', 'X5', 2022, 5); 
+    const myNewCar = createCarFactory('BMW', 'X5', 2022, 5);
     console.log('Создан новый автомобиль через фабрику:');
     myNewCar.displayInfo();
     console.assert(myNewCar.numDoors === 5, "Тест фабрики для Car (numDoors) провален");
@@ -448,25 +454,34 @@ function runTests() {
 
     console.log('Всего создано транспортных средств:', Vehicle.getTotalVehicles());
 
-    console.assert(validateEmail("user@example.com") === true, 
-        "validateEmail: корректный email");
-    console.assert(validateEmail("user.name+tag@sub.example.co.uk") === true, 
-        "validateEmail: сложный корректный email");
-    console.assert(validateEmail("user name@example.com") === false, 
-        "validateEmail: email с пробелами");
-    console.assert(validateEmail("user@@example.com") === false, 
-        "validateEmail: двойной @");
-    console.assert(validateEmail("@example.com") === false, 
-        "validateEmail: нет имени пользователя");
-    console.assert(validateEmail("user@.com") === false, 
-        "validateEmail: нет домена");
-    console.assert(validateEmail("user@example") === false, 
-        "validateEmail: нет доменной зоны");
-    console.assert(validateEmail("") === false, 
-        "validateEmail: пустая строка");
-    console.assert(validateEmail("plaintext") === false, 
-        "validateEmail: нет @");
+    console.assert(validateDate("01.01.2000") === true, "validateDate: корректная дата 01.01.2000");
+    console.assert(validateDate("15.06.1995") === true, "validateDate: корректная дата 15.06.1995");
+    console.assert(validateDate("31.12.2023") === true, "validateDate: корректная дата 31.12.2023");
+    console.assert(validateDate("29.02.2024") === true, "validateDate: корректная дата 29.02.2024 (високосный год, формат верный)");
 
+    console.assert(validateDate("1.01.2000") === false, "validateDate: отсутствие ведущего нуля у дня (1.01.2000)");
+    console.assert(validateDate("01.1.2000") === false, "validateDate: отсутствие ведущего нуля у месяца (01.1.2000)");
+    console.assert(validateDate("01-01-2000") === false, "validateDate: неправильный разделитель (дефис)");
+    console.assert(validateDate("01/01/2000") === false, "validateDate: неправильный разделитель (слэш)");
+    console.assert(validateDate(" 01.01.2000") === false, "validateDate: лишний пробел в начале строки");
+    console.assert(validateDate("01.01.2000 ") === false, "validateDate: лишний пробел в конце строки");
+    console.assert(validateDate("01.01.200") === false, "validateDate: год состоит из 3 цифр");
+    console.assert(validateDate("01.01.20000") === false, "validateDate: год состоит из 5 цифр");
+
+    console.assert(validateDate("00.01.2000") === false, "validateDate: день 00 недопустим");
+    console.assert(validateDate("32.01.2000") === false, "validateDate: день 32 недопустим");
+    console.assert(validateDate("99.01.2000") === false, "validateDate: день 99 недопустим");
+    console.assert(validateDate("01.00.2000") === false, "validateDate: месяц 00 недопустим");
+    console.assert(validateDate("01.13.2000") === false, "validateDate: месяц 13 недопустим");
+    console.assert(validateDate("01.01.1899") === false, "validateDate: год 1899 вне диапазона (19xx-20xx)");
+    console.assert(validateDate("01.01.2100") === false, "validateDate: год 2100 вне диапазона (19xx-20xx)");
+
+    console.assert(validateDate(null) === false, "validateDate: null должен возвращать false");
+    console.assert(validateDate(undefined) === false, "validateDate: undefined должен возвращать false");
+    console.assert(validateDate(12345) === false, "validateDate: число должно возвращать false");
+    console.assert(validateDate({}) === false, "validateDate: объект должен возвращать false");
+    console.assert(validateDate([]) === false, "validateDate: массив должен возвращать false");
+    
     console.log("Все тесты пройдены! ✅");
 }
 

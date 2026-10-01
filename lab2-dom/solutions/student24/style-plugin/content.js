@@ -2,27 +2,26 @@
 
 function addRickMortyTheme() {
 
-    var STORAGE_KEY = 'kai_rm_theme_active';
-    var isActive = localStorage.getItem(STORAGE_KEY) === 'true';
-
+    const STORAGE_KEY = 'kai_rm_theme_active';
+    let isActive = localStorage.getItem(STORAGE_KEY) === 'true';
 
     function toggleTheme() {
 
         // 1) getElementById
-        var pageWrapper = document.getElementById('page_wrapper');
+        const pageWrapper = document.getElementById('page_wrapper');
 
         // 2) querySelector
-        var mainSlider = document.querySelector('.main_slider_holder');
-        var newsBox = document.querySelector('.news_box');
+        const mainSlider = document.querySelector('.main_slider_holder');
+        const newsBox = document.querySelector('.news_box');
 
         // 3) querySelectorAll со СЛОЖНЫМ СЕЛЕКТОРОМ
         //    (два класса + тег: .news_box .box_content h3)
-        var styledHeadings = document.querySelectorAll(
+        const styledHeadings = document.querySelectorAll(
             '.news_box .box_content h3, .main_slider_holder .slide_item h2'
         );
 
         // Все ссылки
-        var allLinks = document.querySelectorAll('a');
+        const allLinks = document.querySelectorAll('a');
 
         if (!pageWrapper) {
             console.log('Элемент с id="page_wrapper" не найден');
@@ -99,12 +98,12 @@ function addRickMortyTheme() {
             });
 
             // 4) parentElement + 5) children — стилизуем соседей
-            var container = document.querySelector('.box_links');
+            const container = document.querySelector('.box_links');
             if (container) {
-                var parent = container.parentElement;
+                const parent = container.parentElement;
                 if (parent) {
-                    for (var i = 0; i < parent.children.length; i++) {
-                        var child = parent.children[i];
+                    for (let i = 0; i < parent.children.length; i++) {
+                        const child = parent.children[i];
                         child.style.borderColor = '#97ce4c';
                     }
                 }
@@ -112,7 +111,6 @@ function addRickMortyTheme() {
 
         } else {
             
-
             pageWrapper.style.background = '';
             pageWrapper.style.backgroundSize = '';
             pageWrapper.style.color = '';
@@ -137,11 +135,11 @@ function addRickMortyTheme() {
                 el.style.color = '';
             });
 
-            var container = document.querySelector('.box_links');
+            const container = document.querySelector('.box_links');
             if (container) {
-                var parent = container.parentElement;
+                const parent = container.parentElement;
                 if (parent) {
-                    for (var i = 0; i < parent.children.length; i++) {
+                    for (let i = 0; i < parent.children.length; i++) {
                         parent.children[i].style.borderColor = '';
                     }
                 }
@@ -153,10 +151,9 @@ function addRickMortyTheme() {
         updateButton();
     }
 
-
     function updateButton() {
         // getElementById — повторное использование
-        var btn = document.getElementById('rm-toggle-btn');
+        const btn = document.getElementById('rm-toggle-btn');
         if (btn) {
             // Меняем иконку в зависимости от статуса
             btn.textContent = isActive ? '🟢' : '🔴';
@@ -170,7 +167,6 @@ function addRickMortyTheme() {
         }
     }
 
-
     function createToggleButton() {
         // getElementById — проверка, не создана ли уже
         if (document.getElementById('rm-toggle-btn')) {
@@ -179,7 +175,7 @@ function addRickMortyTheme() {
         }
 
         // querySelector — ищем контейнер с иконками-кнопками
-        var buttonContainer = document.querySelector('.box_links');
+        const buttonContainer = document.querySelector('.box_links');
 
         if (!buttonContainer) {
             console.log('Не найден контейнер .box_links для кнопок');
@@ -187,7 +183,7 @@ function addRickMortyTheme() {
         }
 
         // Создаём кнопку — квадратную, как иконки на сайте
-        var button = document.createElement('div');
+        const button = document.createElement('div');
         button.id = 'rm-toggle-btn';
         button.title = 'Переключить тему Рик и Морти';
 
@@ -235,7 +231,6 @@ function addRickMortyTheme() {
             toggleTheme();
         }
     }
-
 
     if (document.readyState === 'loading') {
         console.log('Кнопка будет добавлена после загрузки');

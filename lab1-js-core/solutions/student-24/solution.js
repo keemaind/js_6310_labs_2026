@@ -6,7 +6,7 @@ function simpleTask() {
     let p2 = "Дима";
     let p3 = null;
     let p4 = undefined;
-    const p5 = 3;
+    const p5 = true;
 
     
     console.log(typeof p1);
@@ -140,10 +140,19 @@ function processArrays() {
     const sortedByAge = users.sort((a, b) => b.age - a.age);
     const allAdults = users.every(user => user.age >= 18);
     
+
     const activeUserNames = users
         .filter(user => user.isActive)
         .map(user => user.name)
         .sort((a, b) => a.localeCompare(b));
+
+    console.log(squares);
+    console.log(activeUsers);
+    console.log(victoria);
+    console.log(sum);
+    console.log(sortedByAge);
+    console.log(allAdults);
+    console.log(activeUserNames);
 }
 
 // ===== ЗАДАНИЕ 5: Менеджер задач =====

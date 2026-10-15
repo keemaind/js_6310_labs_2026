@@ -25,6 +25,8 @@ Telegram-бот и REST API для управления задачами по м
 - **dotenv** — управление переменными окружения
 - **Vitest** — тестирование и подсчёт покрытия кода
 - **ESLint** — линтинг кода (Flat Config, v9)
+- **supertest** — для теста API
+
 
 
 ## 🚀 Инструкция по запуску
@@ -72,17 +74,22 @@ npm run test:coverage
 
 	
 Запуск бота и приветственное сообщение
-/help
 /start
 	
 Список доступных команд
 /help
+
+![Команда /start + /help](images/imgStartHelp.png)
 	
 Показать текущее состояние доски
 /board
+![Команда /board](images/imgBoard.png)
 	
 Добавить новую задачу (пошаговый диалог)
 /task
+![Команда /task](images/imgTask.png)
 	
 Переместить задачу между колонками (с inline-кнопками)
 /move
+![Команда /move](images/imgMove.png)
+

@@ -34,6 +34,14 @@ export class Board {
     this.tasks.push(task);
   }
 
+  getNextId() {
+    const numericIds = this.tasks
+        .map(t => Number.parseInt(t.id, 10))
+        .filter(id => Number.isInteger(id));
+    const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+    return String(maxId + 1);
+  }
+
   getTasksByStatus(status) {
     return this.tasks.filter(t => t.status === status);
   }

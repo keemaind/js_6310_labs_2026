@@ -2,8 +2,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { bot, initBoard } from './bot/index.js';
-import { router, initApiBoard } from './api/index.js';
+import { bot } from './bot/index.js';
+import { router } from './api/index.js';
 import express from 'express';
 
 const app = express();
@@ -28,10 +28,6 @@ async function startApp() {
     console.error('❌ Ошибка: TELEGRAM_BOT_TOKEN не найден в файле .env');
     process.exit(1);
   }
-
-  // Загружаем состояние доски (общее для бота и API)
-  await initBoard();
-  await initApiBoard();
 
   // Запускаем API
   app.listen(PORT, () => {

@@ -1,5 +1,5 @@
 // tests/fsm.test.js
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import { FSM, USER_STATES } from '../src/core/fsm.js';
 
 describe('FSM', () => {

@@ -1,5 +1,6 @@
 // src/utils/storage.js
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, rename, unlink } from 'fs/promises';
+import { randomUUID } from 'crypto';
 import { existsSync } from 'fs';
 import path from 'path';
 
@@ -15,9 +16,19 @@ export async function loadState(filename) {
 }
 
 export async function saveState(filename, state) {
-  if (!existsSync(DATA_DIR)) {
-    await mkdir(DATA_DIR, { recursive: true });
-  }
   const filePath = path.join(DATA_DIR, filename);
-  await writeFile(filePath, JSON.stringify(state, null, 2), 'utf-8');
+  const dir = path.dirname(filePath);
+  if (!existsSync(dir)) {
+    await mkdir(dir, { recursive: true });
+  }
+
+  // Пишем во временный файл и переименовываем, чтобы не оставить обрезанный JSON
+  const tmpPath = `${filePath}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(tmpPath, JSON.stringify(state, null, 2), 'utf-8');
+    await rename(tmpPath, filePath);
+  } catch (error) {
+    await unlink(tmpPath).catch(() => {});
+    throw error;
+  }
 }

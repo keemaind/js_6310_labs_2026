@@ -1,5 +1,5 @@
 // tests/models.test.js
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import { Task, Board } from '../src/core/models.js';
 
 describe('Task', () => {
@@ -48,6 +48,16 @@ describe('Board', () => {
     const task = new Task('001', 'Задача 1');
     board.addTask(task);
     expect(board.tasks.length).toBe(1);
+  });
+
+  it('должна генерировать следующий ID задачи', () => {
+    expect(board.getNextId()).toBe('1');
+
+    board.addTask(new Task('001', 'Задача 1'));
+    board.addTask(new Task('005', 'Задача 2'));
+    board.addTask(new Task('abc', 'Задача 3'));
+
+    expect(board.getNextId()).toBe('6');
   });
 
   it('должна фильтровать задачи по статусу', () => {
